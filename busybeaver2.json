@@ -1,0 +1,13 @@
+{
+    "init": {
+		"_comment": "The spec is as follows: [alphabet character, how far to move the head after this operation, state to jump to]",
+        "_": ["1", 1, "B"],
+        "0": ["1", 1, "B"],
+        "1": ["1", -1, "B"]
+    },
+    "B": {
+        "_": ["1", -1, "init"],
+        "0": ["1", -1, "init"],
+        "1": ["1", 1, "HALT"]
+    }
+}

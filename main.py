@@ -2,76 +2,11 @@
 Turing machine in Python
 Recommended alphabet: "_", "0", "1"
 """
+import json
 
 LEFT = -1
 RIGHT = 1
 VERBOSE = False
-
-# 2-state busy beaver. Intended result: 1 1 1 1
-bb2 = {
-    "init": {
-        "_": ["1", RIGHT, "B"],
-        "0": ["1", RIGHT, "B"],
-        "1": ["1", LEFT, "B"]
-    },
-    "B": {
-        "_": ["1", LEFT, "init"],
-        "0": ["1", LEFT, "init"],
-        "1": ["1", RIGHT, "HALT"]
-    }
-}
-
-# 3-state busy beaver. Intended result: 1 1 1 1 1 1
-bb3 = {
-    "init": {
-        "_": ["1", RIGHT, "B"],
-        "0": ["1", RIGHT, "B"],
-        "1": ["1", RIGHT, "HALT"]
-    },
-    "B": {
-        "_": ["0", RIGHT, "C"],
-        "0": ["0", RIGHT, "C"],
-        "1": ["1", RIGHT, "B"]
-    },
-    "C": {
-        "_": ["1", LEFT, "C"],
-        "0": ["1", LEFT, "C"],
-        "1": ["1", LEFT, "init"]
-    }
-}
-
-# NOT program. Intended result: NOT(tape)
-notProg = {
-    "init": {
-        "_": ["_", RIGHT, "HALT"],
-        "0": ["1", RIGHT, "init"],
-        "1": ["0", RIGHT, "init"]
-    }
-}
-
-# AND two 8bit numbers. Input: (8bit binary number) _ (8bit binary number), Intended result: _ _ _ _ _ _ _ _ _ AND(tape1 _ tape2)
-and8bit = {
-    "init": { # Reading the first digit
-        "_": ["_", LEFT * 8, "clearTape"], # Hit number terminator, clear the first number
-        "0": ["0", RIGHT * 9, "and0"], # We have a zero, go forward to the second 8 bit number
-        "1": ["1", RIGHT * 9, "and1"] # One, go forward to second 8 bit number
-    },
-    "and0": {
-        "_": ["ERROR0", LEFT, "HALT"], # Uh oh! We can't and a 0 and _
-        "0": ["0", LEFT * 8, "init"], # 0 AND 0 = 0, go to the next digit in the first number
-        "1": ["0", LEFT * 8, "init"]
-    },
-    "and1": {
-        "_": ["ERROR1", LEFT, "HALT"], # Oh no!
-        "0": ["0", LEFT * 8, "init"],
-        "1": ["1", LEFT * 8, "init"]
-    },
-    "clearTape": {
-        "_": ["_", RIGHT, "HALT"], # end of the first number, it's all gone now
-        "0": ["_", RIGHT, "clearTape"],
-        "1": ["_", RIGHT, "clearTape"]
-    }
-}
 
 class TuringMachine:
     def __init__(self, program):
@@ -130,6 +65,12 @@ class TuringMachine:
             print(val, end = " ")
         print("\n")
 
-amachine = TuringMachine(and8bit)
-amachine.loadTape("11010100_11011000")
-amachine.run()
+if __name__ == '__main__':
+    filename = input("What program would you like to run? (include extension): ")
+    with open(filename) as programFile:
+        program = json.load(programFile)
+    initTape = input("Initial value for tape (blank for none): ")
+
+    amachine = TuringMachine(program)
+    if initTape: amachine.loadTape(initTape)
+    amachine.run()
