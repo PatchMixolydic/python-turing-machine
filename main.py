@@ -9,21 +9,21 @@ VERBOSE = False
 
 # 2-state busy beaver. Intended result: 1 1 1 1
 bb2 = {
-    "A": {
+    "init": {
         "_": ["1", RIGHT, "B"],
         "0": ["1", RIGHT, "B"],
         "1": ["1", LEFT, "B"]
     },
     "B": {
-        "_": ["1", LEFT, "A"],
-        "0": ["1", LEFT, "A"],
+        "_": ["1", LEFT, "init"],
+        "0": ["1", LEFT, "init"],
         "1": ["1", RIGHT, "HALT"]
     }
 }
 
 # 3-state busy beaver. Intended result: 1 1 1 1 1 1
 bb3 = {
-    "A": {
+    "init": {
         "_": ["1", RIGHT, "B"],
         "0": ["1", RIGHT, "B"],
         "1": ["1", RIGHT, "HALT"]
@@ -36,35 +36,35 @@ bb3 = {
     "C": {
         "_": ["1", LEFT, "C"],
         "0": ["1", LEFT, "C"],
-        "1": ["1", LEFT, "A"]
+        "1": ["1", LEFT, "init"]
     }
 }
 
 # NOT program. Intended result: NOT(tape)
 notProg = {
-    "main": {
+    "init": {
         "_": ["_", RIGHT, "HALT"],
-        "0": ["1", RIGHT, "main"],
-        "1": ["0", RIGHT, "main"]
+        "0": ["1", RIGHT, "init"],
+        "1": ["0", RIGHT, "init"]
     }
 }
 
 # AND two 8bit numbers. Input: (8bit binary number) _ (8bit binary number), Intended result: _ _ _ _ _ _ _ _ _ AND(tape1 _ tape2)
 and8bit = {
-    "main": { # Reading the first digit
+    "init": { # Reading the first digit
         "_": ["_", LEFT * 8, "clearTape"], # Hit number terminator, clear the first number
         "0": ["0", RIGHT * 9, "and0"], # We have a zero, go forward to the second 8 bit number
         "1": ["1", RIGHT * 9, "and1"] # One, go forward to second 8 bit number
     },
     "and0": {
         "_": ["ERROR0", LEFT, "HALT"], # Uh oh! We can't and a 0 and _
-        "0": ["0", LEFT * 8, "main"], # 0 AND 0 = 0, go to the next digit in the first number
-        "1": ["0", LEFT * 8, "main"]
+        "0": ["0", LEFT * 8, "init"], # 0 AND 0 = 0, go to the next digit in the first number
+        "1": ["0", LEFT * 8, "init"]
     },
     "and1": {
         "_": ["ERROR1", LEFT, "HALT"], # Oh no!
-        "0": ["0", LEFT * 8, "main"],
-        "1": ["1", LEFT * 8, "main"]
+        "0": ["0", LEFT * 8, "init"],
+        "1": ["1", LEFT * 8, "init"]
     },
     "clearTape": {
         "_": ["_", RIGHT, "HALT"], # end of the first number, it's all gone now
@@ -78,7 +78,7 @@ class TuringMachine:
         self.tape = {}
         self.program = program
         self.currentIdx = 0
-        self.currentState = list(self.program.keys())[0]
+        self.currentState = 'init'
         self.running = False
 
     def run(self):
