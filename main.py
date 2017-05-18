@@ -1,6 +1,7 @@
 """
 Turing machine in Python
 Recommended alphabet: "_", "0", "1"
+Spaces are disallowed in alphabets when pre-loading tapes; they are used as optional delimiters. Use "_" instead.
 """
 import json
 
@@ -22,6 +23,7 @@ class TuringMachine:
             self.step()
 
     def loadTape(self, contents):
+        contents = contents.replace(" ", "")
         for i in range(len(contents)):
             letter = contents[i]
             self.tape[i] = letter
