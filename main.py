@@ -14,7 +14,7 @@ class TuringMachine:
         self.tape = {}
         self.program = program
         self.currentIdx = 0
-        self.currentState = 'init'
+        self.currentState = self.program.get("initState", "init")
         self.running = False
 
     def run(self):

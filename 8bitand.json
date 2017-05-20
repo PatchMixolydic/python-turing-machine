@@ -1,4 +1,6 @@
 {
+    "_comment": "ANDs two 8-bit numbers. Input: two 8 bit numbers separated by a _. Output: _ _ _ _ _ _ _ _ _ a AND b",
+    "initState": "init",
     "init": {
         "_": ["_", -8, "clearTape"],
         "0": ["0", 9, "and0"],

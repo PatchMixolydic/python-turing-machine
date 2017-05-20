@@ -1,4 +1,6 @@
 {
+    "_comment": "Flips bits of a binary number. Input: Binary number. Output: Bitflipped binary number.",
+    "initState": "init",
     "init": {
         "_": ["_", 1, "HALT"],
         "0": ["1", 1, "init"],
