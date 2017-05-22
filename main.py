@@ -3,15 +3,15 @@ Turing machine in Python
 Recommended alphabet: "_", "0", "1"
 Spaces are disallowed in alphabets when pre-loading tapes; they are used as optional delimiters. Use "_" instead.
 """
-import json
+import json, collections
 
-LEFT = -1
-RIGHT = 1
 VERBOSE = False
 
 class TuringMachine:
     def __init__(self, program):
-        self.tape = {}
+        self.tape = collections.OrderedDict()
+        for i in range(-5, 5):
+            self.tape[i] = "_"
         self.program = program
         self.currentIdx = 0
         self.currentState = self.program.get("initState", "init")
